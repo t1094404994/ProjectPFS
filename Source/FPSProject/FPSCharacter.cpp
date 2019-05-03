@@ -9,6 +9,10 @@ AFPSCharacter::AFPSCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	lastX = 0;
+	lastY = 0;
+	with = 40000;
+	haveCrace = false;
 	//创建一个第一人称摄像机
 	FPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	//将摄像机组件附加到胶囊体组件
@@ -44,7 +48,7 @@ void AFPSCharacter::BeginPlay()
 void AFPSCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	checkMove();
 }
 
 // Called to bind functionality to input
@@ -111,5 +115,32 @@ void AFPSCharacter::Fire()
 			}
 		}
 	}
+}
+//以移动半径x检测是否需要
+void AFPSCharacter::checkMove() {
+	FVector CameraLocation;
+	FRotator CameraRocation;
+	GetActorEyesViewPoint(CameraLocation, CameraRocation);
+	//将MuzzleOffset从摄像机空间变换到世界空间
+	FVector MuzzleLocation = CameraLocation + FTransform(CameraRocation).InverseTransformVector(MuzzleOffset);
+	FRotator MuzzleRotaion = CameraRocation;
+	if ((CameraLocation.X - lastX)*(CameraLocation.X - lastX) + (CameraLocation.Y - lastY)*(CameraLocation.Y - lastY) > with) {
+		lastX = CameraLocation.X;//更新
+		lastY = CameraLocation.Y;
+		if (haveCrace) {
+			moves();
+		}
+		else {
+			creat();
+		}
+	}
+}
+//创建200的正方体
+void AFPSCharacter::creat() {
+	haveCrace = true;
+}
+//移动
+void AFPSCharacter::moves(FRotator CameraRocation) {
+
 }
 

@@ -59,4 +59,17 @@ public:
 	// 生成的发射物类。
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class AFPSProjectile> ProjectileClass;
+	//移动
+	UFUNCTION()
+	void checkMove();
+	//生成或更新位置
+	UFUNCTION()
+	void creat();
+	UFUNCTION()
+	void moves(FRotator CameraRocation);
+	//上次检测位置
+	float lastX = 0;
+	float lastY = 0;
+	float with;
+	bool haveCrace;
 };
